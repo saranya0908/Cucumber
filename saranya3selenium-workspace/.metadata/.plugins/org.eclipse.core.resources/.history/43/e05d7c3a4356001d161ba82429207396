@@ -1,0 +1,21 @@
+package com.manningoaks.config;
+
+import java.util.HashMap;
+
+public class ConfigProperties {
+public static void main(String args[]) {
+	
+}
+public void configval() {
+	HashMap<String,Integer> lst= new HashMap<String,Integer>();
+	lst.put("apple",20);
+	lst.put("banana",30);
+	lst.put("orange",25);
+	lst.put("kiwi",40);
+	lst.put("grapes",50);
+	lst.put("kiwi",40);
+	lst.put("banana",40);
+	lst.put(null, null);
+	System.out.println("HashMap contains:"+lst);
+}
+}

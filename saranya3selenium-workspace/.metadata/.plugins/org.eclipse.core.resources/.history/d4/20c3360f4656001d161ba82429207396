@@ -1,0 +1,31 @@
+package com.manningoaks.config;
+
+import java.util.HashMap;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.*;
+
+public class ConfigProperties {
+	public static void main(String args[]) {
+
+	}
+
+public void configval() throws FileNotFoundException {
+	Scanner scanner = new Scanner(new FileReader("C:\\Software Testing\\config.txt"));
+    Map<String, String> personMap = new LinkedHashMap<String, String>();
+    Map<String, String> automobilMap = new LinkedHashMap<String, String>();
+    String line;
+
+    while (scanner.hasNext()) {
+         line = scanner.next();
+         if (!line.startsWith("#") && !line.isEmpty()) {
+             String[] columns = line.split("=");
+
+             personMap.put(columns[0], columns[1]);
+         }
+
+
+    }
+    System.out.println(personMap);
+}
+}

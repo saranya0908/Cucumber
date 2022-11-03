@@ -1,0 +1,16 @@
+Feature: Our school link
+
+//@LoadConfigurationDetails
+Scenario: Validate the page navigation
+Given Manning Oaks home page is availiable
+When Our School menu link is clicked 
+Then Our School page should be navigated
+When Students&Families dropdown is clicked
+Then Select Cafeteria option from the drodown
+
+Scenario: Validate the classlink login
+When Classlink menu link is clicked 
+Then classlink login page should be navigated
+When username and password is entered
+And Signin button is clicked
+Then Classlink page should be navigated

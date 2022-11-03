@@ -1,0 +1,14 @@
+package com.manningoaks.config;
+
+import java.util.HashMap;
+
+public class ConfigProperties {
+public static void main(String args[]) {
+	
+}
+public void configval() {
+	Scanner scanner = new Scanner(new FileReader("C:/workspace/column-mapping.txt"));
+	
+	Map<String, String> personMap = new LinkedHashMap<String, String>();	
+}
+}

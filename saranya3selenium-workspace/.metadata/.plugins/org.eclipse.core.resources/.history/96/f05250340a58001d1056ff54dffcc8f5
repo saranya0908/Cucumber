@@ -1,0 +1,178 @@
+package com.manningoaks.stepdefinition;
+
+import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
+import com.manningoaks.config.ConfigProperties;
+
+import io.cucumber.java.Before;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+public class OurSchoolStepdef {
+	static int sleeptime = 1000;
+	static WebDriver driver;
+	static Map<String, String> hmapconf = new LinkedHashMap<String, String>();
+	
+	@Before("@LoadConfigurationDetails") 
+	public static void setup() throws FileNotFoundException {
+		Scanner scanner = new Scanner(new FileReader("C:\\Software Testing\\config.txt"));
+		String line;
+
+		while (scanner.hasNext()) {
+			line = scanner.next();
+			if (!line.isEmpty()) {
+				int start = line.indexOf("=");
+				
+				String[] columns = line.split("=");
+				hmapconf.put(line.substring(0, start), line.substring(start-1));
+			}				
+		}
+		System.out.println(hmapconf);
+	}
+		
+	
+	@Given("Manning Oaks home page is availiable")
+	public void manning_oaks_home_page_is_availiable() {
+
+		System.setProperty("webdriver.chrome.driver", "C:\\Software Testing\\chromedriver_win32\\chromedriver107.exe");
+		driver = new ChromeDriver();
+		driver.get(hmapconf.get("Website_link_Homepage"));
+		driver.manage().window().maximize();
+	}
+
+	@When("Our School menu link is clicked")
+	public void our_school_menu_link_is_clicked() throws Exception {
+		
+		Thread.sleep(sleeptime);
+		WebElement menulink = driver.findElement(By.xpath(hmapconf.get("Menu_link_Ourschool")));
+		menulink.click();
+		 File f = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+	     FileUtils.copyFile(f, new File("C:\\Software Testing/screenshot01.png"));
+	 
+	      //screenshot copied from buffer is saved at the mentioned path.
+	 
+	     System.out.println("The Screenshot is captured.");
+
+	}
+
+	@Then("Our School page should be navigated")
+	public void our_school_page_should_be_navigated() throws Exception {
+		
+		Thread.sleep(sleeptime);
+		if (!driver.getCurrentUrl().equalsIgnoreCase("https://www.fultonschools.org/domain/5490")) {
+			System.out.println(driver.getCurrentUrl());
+			throw new Exception("Page Navigation Failed");
+		}
+
+	}
+	
+
+	@When("Students&Families dropdown is clicked")
+	public void students_families_dropdown_is_clicked() throws InterruptedException {
+		Thread.sleep(sleeptime);
+		WebElement menulink = driver.findElement(By.xpath(hmapconf.get("Menu_link_Students&Families")));
+		menulink.click();
+	}
+	@Then("Select Cafeteria option from the drodown")
+	public void select_cafeteria_option_from_the_drodown() throws InterruptedException {
+		Thread.sleep(sleeptime);
+		WebElement menulink = driver.findElement(By.xpath(hmapconf.get("Menu_link_Students&Families")));
+		//menulink.click();
+		
+		Select slt = new Select(menulink);
+		
+		List<WebElement> lst = slt.getOptions();
+
+        //Looping through the options and printing dropdown options
+        System.out.println("The dropdown options are:");
+        for(WebElement options: lst)
+            System.out.println(options.getText());
+
+		slt.selectByIndex(0); 
+	}
+
+
+
+
+	@When("Classlink menu link is clicked")
+	public void classlink_menu_link_is_clicked() throws InterruptedException {
+		Thread.sleep(sleeptime);
+		
+		// Open new child window within the main window
+		driver.findElement(By.xpath(hmapconf.get("Website_link_Classlink_Loginpage"))).click();
+	}
+
+	@Then("classlink login page should be navigated")
+	public void classlink_login_page_should_be_navigated() throws Exception {
+		Thread.sleep(sleeptime);
+		
+		// Get handles of the windows
+		String mainWindowHandle = driver.getWindowHandle();
+		Set<String> allWindowHandles = driver.getWindowHandles();
+		Iterator<String> iterator = allWindowHandles.iterator();
+
+		// Here we will check if child window has other child windows and will fetch the
+		// heading of the child window
+		while (iterator.hasNext()) {
+			String ChildWindow = iterator.next();
+			if (!mainWindowHandle.equalsIgnoreCase(ChildWindow)) {
+				driver.switchTo().window(ChildWindow);
+			}
+		}
+
+		if (!driver.getCurrentUrl().equalsIgnoreCase("https://launchpad.classlink.com/fcs")) {
+			System.out.println(driver.getCurrentUrl());
+			throw new Exception("Page Navigation Failed");
+		}
+	}
+
+	@When("username and password is entered")
+	public void username_and_password_is_entered() throws InterruptedException {
+		Thread.sleep(sleeptime);
+		
+		WebElement username = driver.findElement(By.id(hmapconf.get("Username")));
+		username.sendKeys("2000168135");
+
+		Thread.sleep(sleeptime);
+		
+		WebElement password = driver.findElement(By.id(hmapconf.get("Password")));
+		password.sendKeys("03222014");
+	}
+
+	@When("Signin button is clicked")
+	public void signin_button_is_clicked() throws InterruptedException {
+		Thread.sleep(sleeptime);
+		
+		WebElement signin = driver.findElement(By.id("signin"));
+		signin.click();
+		Thread.sleep(sleeptime);
+	}
+
+	@Then("Classlink page should be navigated")
+	public void classlink_page_should_be_navigated() throws Exception {
+		Thread.sleep(sleeptime);
+		
+		System.out.println(driver.getCurrentUrl());
+		if (!driver.getCurrentUrl().equalsIgnoreCase(hmapconf.get("Website_link_Classlink_Homepage"))) {
+			throw new Exception("Login Failed");
+		}
+
+	}
+
+}
